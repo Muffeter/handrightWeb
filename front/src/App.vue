@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const paramLst = [
+import { ref } from 'vue'
+const paramLst = ref([
   { name: 'text', type: 'str', default: 'Hello, world!' },
   { name: 'line_spacing', type: 'int', default: 90 },
   { name: 'fill', type: 'int', default: 0 },
@@ -17,17 +18,27 @@ const paramLst = [
   { name: 'perturb_y_sigma', type: 'int', default: 1 },
   { name: 'perturb_theta_sigma', type: 'float', default: 0.05 },
 
+])
+
+const colors = [
+  "badge-lg-red", "badge-lg-orange", "badge-lg-green", "badge-lg-amber", "badge-lg-yellow", "badge-lg-lime"
+  , "badge-lg-red", "badge-lg-orange", "badge-lg-green", "badge-lg-amber", "badge-lg-yellow", "badge-lg-lime"
+  , "badge-lg-red", "badge-lg-orange", "badge-lg-green", "badge-lg-amber", "badge-lg-yellow", "badge-lg-lime"
 ]
+
 </script>
 
 <template>
-  <main flex="~ col">
-    <div v-for="param in paramLst">
-      {{ param.name }} :
-      <input :key="param.name" :value="param.default">
+  <main flex="~ row" m-8>
+    <div flex="~ col" justify-center space-y-6>
+      <div v-for="(param, index) in paramLst" :class="colors[index]">
+        {{ param.name }} :
+        <input :key="param.name" :value="param.default" bg-dark input-border rounded>
+      </div>
+      <button input-border bg-red rounded w32>Generate</button>
     </div>
-    <button>Generate</button>
-    <div border="~ red">
+    <hr>
+    <div border border-red>
       to be continued...
     </div>
   </main>

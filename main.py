@@ -1,17 +1,19 @@
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, send_file
+from flask_cors import CORS
 from PIL import Image, ImageFont
 from handright import Template, handwrite
 import engine
 
 app = Flask(__name__)
+CORS(app)
 
 # Endpoint to serve static files (e.g., HTML, CSS, JavaScript)
 @app.route('/static/<path:filename>')
 def serve_static(filename):
     return send_from_directory('static', filename)
 
-def create_template(line_spacing, fill, left_margin, top_margin, right_margin, bottom_margin, word_spacing, line_spacing_sigma, font_size_sigma, word_spacing_sigma, start_chars, end_chars, perturb_x_sigma, perturb_y_sigma, perturb_theta_sigma):
-    background = Image.new(mode="1", size=(3072, 3920), color=1)
+def create_template(line_spacing, fill, left_margin, top_margin, right_margin, bottom_margin, word_spacing, line_spacing_sigma, font_size_sigma, word_spacing_sigma, start_chars, end_chars, perturb_x_sigma, perturb_y_sigma, perturb_theta_sigma, width, height):
+    background = Image.new(mode="1", size=(width, height), color=1)
     font_path = r"D:\App\Handright\tests\fonts\Bo Le Locust Tree Handwriting Pen Chinese Font-Simplified Chinese Fonts.ttf"
     font_size = 80
     font = ImageFont.truetype(font_path, size=font_size)
@@ -57,19 +59,20 @@ def generate():
     perturb_x_sigma = int(request.args.get('perturb_x_sigma', 1))
     perturb_y_sigma = int(request.args.get('perturb_y_sigma', 1))
     perturb_theta_sigma = float(request.args.get('perturb_theta_sigma', 0.05))
-
+    width = int(request.args.get('width', 3072))
+    height = int(request.args.get('height', 3920))
     # Create a template based on the parameters
     template = create_template(
         line_spacing, fill, left_margin, top_margin, right_margin, bottom_margin, word_spacing,
         line_spacing_sigma, font_size_sigma, word_spacing_sigma, start_chars, end_chars,
-        perturb_x_sigma, perturb_y_sigma, perturb_theta_sigma
+        perturb_x_sigma, perturb_y_sigma, perturb_theta_sigma, width, height
     )
 
     # Assuming `engine.run()` performs the generation process
-    engine.run(text, template)  # You should define `engine` somewhere in your code
-
+    filename = engine.run(text, template)  # You should define `engine` somewhere in your code
+    filepath = f"static/{filename}.png"
     # Return a JSON response indicating success
-    return jsonify({'message': 'Generated with parameters'})
+    return send_file(filepath, as_attachment=True, mimetype='image/png')
 
 
 if __name__ == '__main__':

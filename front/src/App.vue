@@ -1,47 +1,83 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-const paramLst = ref([
-  { name: 'text', type: 'str', default: 'Hello, world!' },
-  { name: 'line_spacing', type: 'int', default: 90 },
-  { name: 'fill', type: 'int', default: 0 },
-  { name: 'left_margin', type: 'int', default: 30 },
-  { name: 'top_margin', type: 'int', default: 0 },
-  { name: 'right_margin', type: 'int', default: 30 },
-  { name: 'bottom_margin', type: 'int', default: 0 },
-  { name: 'word_spacing', type: 'int', default: -10 },
-  { name: 'line_spacing_sigma', type: 'int', default: 1 },
-  { name: 'font_size_sigma', type: 'int', default: 1 },
-  { name: 'word_spacing_sigma', type: 'int', default: 1 },
-  { name: 'start_chars', type: 'str', default: '“（[<' },
-  { name: 'end_chars', type: 'str', default: '，。' },
-  { name: 'perturb_x_sigma', type: 'int', default: 1 },
-  { name: 'perturb_y_sigma', type: 'int', default: 1 },
-  { name: 'perturb_theta_sigma', type: 'float', default: 0.05 },
-
-])
-
 const colors = [
   "badge-lg-red", "badge-lg-orange", "badge-lg-green", "badge-lg-amber", "badge-lg-yellow", "badge-lg-lime"
   , "badge-lg-red", "badge-lg-orange", "badge-lg-green", "badge-lg-amber", "badge-lg-yellow", "badge-lg-lime"
   , "badge-lg-red", "badge-lg-orange", "badge-lg-green", "badge-lg-amber", "badge-lg-yellow", "badge-lg-lime"
 ]
+let defaultParams = ref({
+  text: { name: "text", value: "Hello, World!" },
+  line_spacing: { name: "line_spacing", value: 90 },
+  fill: { name: "fill", value: 0 },
+  left_margin: { name: "left_margin", value: 30 },
+  top_margin: { name: "top_margin", value: 0 },
+  right_margin: { name: "right_margin", value: 30 },
+  bottom_margin: { name: "bottom_margin", value: 0 },
+  word_spacing: { name: "word_spacing", value: -10 },
+  line_spacing_sigma: { name: "line_spacing_sigma", value: 1 },
+  font_size_sigma: { name: "font_size_sigma", value: 1 },
+  word_spacing_sigma: { name: "word_spacing_sigma", value: 1 },
+  start_chars: { name: "start_chars", value: "“（[<" },
+  end_chars: { name: "end_chars", value: "，。" },
+  perturb_x_sigma: { name: "perturb_x_sigma", value: 1 },
+  perturb_y_sigma: { name: "perturb_y_sigma", value: 1 },
+  perturb_theta_sigma: { name: "perturb_theta_sigma", value: 0.05 },
+  width: { name: "width", value: 3072 },
+  height: { name: "height", value: 3920 },
+}
+)
+
+const paramsNames = Object.keys(defaultParams.value)
+const inputValues = ref(defaultParams.value)
+
+const imgUrl = ref('')
+
+function getValue(name: string) {
+  return inputValues.value[name].value
+}
+
+function updateValue(name: string, value: string) {
+  inputValues.value[name].value = value
+}
+
+async function previewParams() {
+  let url = new URL("http://localhost:5000/api/generate")
+  Object.keys(inputValues.value).forEach((key, index) => {
+    url.searchParams.append(key, inputValues.value[key].value)
+  })
+  //get the image from the server http://localhost:5000/api/generate
+  const result = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
+  })
+  const blob = await result.blob()
+  imgUrl.value = URL.createObjectURL(blob)
+}
 
 </script>
 
 <template>
-  <main flex="~ row" m-8>
-    <div flex="~ col" justify-center space-y-6>
-      <div v-for="(param, index) in paramLst" :class="colors[index]">
-        {{ param.name }} :
-        <input :key="param.name" :value="param.default" bg-dark input-border rounded>
+  <main flex="~ row" mx-16 my-16>
+    <div flex="~ col nowrap" w-sm justify-center items-start space-y-6>
+      <div v-for="(param, index) in paramsNames" :class="colors[index]">
+        {{ param }} :
+        <input :key="param" :value="getValue(param)" @input="updateValue(param, $event.target.value)" bg-dark input-border
+          rounded>
       </div>
-      <button input-border bg-red rounded w32>Generate</button>
+      <div flex="~ row nowrap" justify-evenly gap-2>
+        <button input-border bg-red rounded w32 @click="previewParams">Preview</button>
+        <button input-border bg-red rounded w32>Download</button>
+      </div>
     </div>
-    <hr>
-    <div border border-red>
-      to be continued...
+    <hr flex-shrink mx-4 my--4>
+    <div basis-a flex justify-center mx-8 object-contain>
+      <img v-if="imgUrl" :src="imgUrl" alt="Image" w-full h-full max-w-full max-h-auto object-contain>
     </div>
   </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>

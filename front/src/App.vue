@@ -1,11 +1,33 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { Ref, ref } from 'vue'
+
+interface Param {
+  text: { name: string, value: string },
+  line_spacing: { name: string, value: number },
+  fill: { name: string, value: number },
+  left_margin: { name: string, value: number },
+  top_margin: { name: string, value: number },
+  right_margin: { name: string, value: number },
+  bottom_margin: { name: string, value: number },
+  word_spacing: { name: string, value: number },
+  line_spacing_sigma: { name: string, value: number },
+  font_size_sigma: { name: string, value: number },
+  word_spacing_sigma: { name: string, value: number },
+  start_chars: { name: string, value: string },
+  end_chars: { name: string, value: string },
+  perturb_x_sigma: { name: string, value: number },
+  perturb_y_sigma: { name: string, value: number },
+  perturb_theta_sigma: { name: string, value: number },
+  width: { name: string, value: number },
+  height: { name: string, value: number },
+}
+
 const colors = [
   "badge-lg-red", "badge-lg-orange", "badge-lg-green", "badge-lg-amber", "badge-lg-yellow", "badge-lg-lime"
   , "badge-lg-red", "badge-lg-orange", "badge-lg-green", "badge-lg-amber", "badge-lg-yellow", "badge-lg-lime"
   , "badge-lg-red", "badge-lg-orange", "badge-lg-green", "badge-lg-amber", "badge-lg-yellow", "badge-lg-lime"
 ]
-let defaultParams = ref({
+let defaultParams = ref<Param>({
   text: { name: "text", value: "Hello, World!" },
   line_spacing: { name: "line_spacing", value: 90 },
   fill: { name: "fill", value: 0 },
@@ -28,7 +50,7 @@ let defaultParams = ref({
 )
 
 const paramsNames = Object.keys(defaultParams.value)
-const inputValues = ref(defaultParams.value)
+const inputValues: Ref<Param> = ref(defaultParams.value)
 
 const imgUrl = ref('')
 
@@ -67,9 +89,9 @@ async function previewParams() {
         <input :key="param" :value="getValue(param)" @input="updateValue(param, $event.target.value)" bg-dark input-border
           rounded>
       </div>
-      <div flex="~ row nowrap" justify-evenly gap-2>
-        <button input-border bg-red rounded w32 @click="previewParams">Preview</button>
-        <button input-border bg-red rounded w32>Download</button>
+      <div flex="~ row nowrap" gap-2>
+        <button input-border bg-purple rounded w32 text-white font-bold @click="previewParams">Preview</button>
+        <button input-border bg-gray rounded w32 text-black font-bold>Download</button>
       </div>
     </div>
     <hr flex-shrink mx-4 my--4>

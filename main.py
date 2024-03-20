@@ -1,14 +1,15 @@
 from flask import Flask, jsonify, request, send_from_directory, send_file
-from flask_cors import CORS
+from flask_cors import CORS,cross_origin
 from PIL import Image, ImageFont
 from handright import Template, handwrite
 import engine
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Endpoint to serve static files (e.g., HTML, CSS, JavaScript)
 @app.route('/static/<path:filename>')
+@cross_origin()
 def serve_static(filename):
     return send_from_directory('static', filename)
 

@@ -47,13 +47,15 @@ for im in images:
 services:
     handright:
         image: sonmudocker/handright
+        ports:
+            - '5000:5000'
         networks:
             - custom
     
     handrightWeb:
         image: sonmudocker/handright_front
         ports: 
-            - '3000:3000'
+            - '5173:5173'
         depends_on:
             - handright
         networks:

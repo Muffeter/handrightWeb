@@ -10,4 +10,4 @@ RUN pnpm run build
 FROM handright AS hr
 EXPOSE 3000
 WORKDIR /app/hr_front
-CMD [ "pnpm", "start" ]
+CMD [ "pnpm", "dev" ]

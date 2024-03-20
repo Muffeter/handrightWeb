@@ -2,24 +2,7 @@
 import { Ref, ref } from 'vue'
 
 interface Param {
-  text: { name: string, value: string },
-  line_spacing: { name: string, value: number },
-  fill: { name: string, value: number },
-  left_margin: { name: string, value: number },
-  top_margin: { name: string, value: number },
-  right_margin: { name: string, value: number },
-  bottom_margin: { name: string, value: number },
-  word_spacing: { name: string, value: number },
-  line_spacing_sigma: { name: string, value: number },
-  font_size_sigma: { name: string, value: number },
-  word_spacing_sigma: { name: string, value: number },
-  start_chars: { name: string, value: string },
-  end_chars: { name: string, value: string },
-  perturb_x_sigma: { name: string, value: number },
-  perturb_y_sigma: { name: string, value: number },
-  perturb_theta_sigma: { name: string, value: number },
-  width: { name: string, value: number },
-  height: { name: string, value: number },
+  [key: string]: { name: string, value: string | number };
 }
 
 const colors = [
@@ -64,8 +47,8 @@ function updateValue(name: string, value: string) {
 
 async function previewParams() {
   let url = new URL("http://localhost:5000/api/generate")
-  Object.keys(inputValues.value).forEach((key, index) => {
-    url.searchParams.append(key, inputValues.value[key].value)
+  Object.keys(inputValues.value).forEach(key => {
+    url.searchParams.append(key, inputValues.value[key].value.toString())
   })
   //get the image from the server http://localhost:5000/api/generate
   const result = await fetch(url, {
@@ -86,8 +69,8 @@ async function previewParams() {
     <div flex="~ col nowrap" w-sm justify-center items-start space-y-6>
       <div v-for="(param, index) in paramsNames" :class="colors[index]">
         {{ param }} :
-        <input :key="param" :value="getValue(param)" @input="updateValue(param, $event.target.value)" bg-dark input-border
-          rounded>
+        <input :key="param" :value="getValue(param)"
+          @input="updateValue(param, ($event.target as HTMLInputElement).value)" bg-dark input-border rounded>
       </div>
       <div flex="~ row nowrap" gap-2>
         <button input-border bg-purple rounded w32 text-white font-bold @click="previewParams">Preview</button>

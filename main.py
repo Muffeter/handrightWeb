@@ -8,8 +8,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Endpoint to serve static files (e.g., HTML, CSS, JavaScript)
-@app.route('/static/<path:filename>')
-@cross_origin()
+@app.route('/static/<path:filename>', methods=['GET', 'POST', 'OPTIONS'])
 def serve_static(filename):
     return send_from_directory('static', filename)
 
@@ -77,4 +76,4 @@ def generate():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0')

@@ -46,7 +46,7 @@ function updateValue(name: string, value: string) {
 }
 
 async function previewParams() {
-  let url = new URL("http://localhost:5000/api/generate")
+  let url = new URL("http://103.40.13.71:52704/api/generate")
   Object.keys(inputValues.value).forEach(key => {
     url.searchParams.append(key, inputValues.value[key].value.toString())
   })

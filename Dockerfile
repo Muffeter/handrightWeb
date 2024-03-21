@@ -1,8 +1,8 @@
-FROM python:3.9-slim as py
+FROM python:3.9-slim
 WORKDIR /app/hr_back
-COPY . /app/hr_back
-RUN pip install -r requirements.txt
+COPY requirements.txt .
+RUN pip install -r requirements.txt --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple
+COPY . .
 
-FROM py
 EXPOSE 5000
 CMD [ "python", "main.py" ]

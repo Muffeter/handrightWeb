@@ -14,7 +14,7 @@ def serve_static(filename):
 
 def create_template(line_spacing, fill, left_margin, top_margin, right_margin, bottom_margin, word_spacing, line_spacing_sigma, font_size_sigma, word_spacing_sigma, start_chars, end_chars, perturb_x_sigma, perturb_y_sigma, perturb_theta_sigma, width, height):
     background = Image.new(mode="1", size=(width, height), color=1)
-    font_path = r"D:\App\Handright\tests\fonts\Bo Le Locust Tree Handwriting Pen Chinese Font-Simplified Chinese Fonts.ttf"
+    font_path = r"./font/01.ttf"
     font_size = 80
     font = ImageFont.truetype(font_path, size=font_size)
     

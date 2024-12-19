@@ -5,9 +5,8 @@ from handright import Template, handwrite
 import datetime
 
 
-def run(text:str, template:Template):
-
-    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+def run(text: str, template: Template):
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"{timestamp}"
 
     images = handwrite(text, template)
